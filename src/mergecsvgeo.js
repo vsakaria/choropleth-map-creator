@@ -37,6 +37,7 @@ function streamFile( csvPath, geoJsonPath, join_field_key )
 				merged_data.features = geo_json;
 
 				buildCholorpleth( merged_data );
+
 			});
 		}
 		else
