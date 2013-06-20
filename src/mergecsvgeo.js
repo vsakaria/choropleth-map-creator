@@ -1,9 +1,9 @@
 function MapData() {
-	console.log("MapData Init");
+
 };
 
 
-MapData.prototype.mergeData = function(csvPath, geoJsonPath, join_field_key)
+MapData.prototype.mergeData = function(csvPath, geoJsonPath, join_field_key, callback)
 {
 	var csv;
 	var geo_json;
@@ -21,41 +21,42 @@ MapData.prototype.mergeData = function(csvPath, geoJsonPath, join_field_key)
 		if(data)
 		{
 			csv = data
-
 			$.ajax(
 			{
 				url: geoJsonPath,
 				async: false,
 				data: 'json',
+
 				success: function (data)
 				{
 					geo_json = data.features;
-					console.log("Loading CSV data");
+
+					$.each(geo_json, function(index, object)
+					{
+						join_field_object[join_field_key] = object.properties[join_field_key];
+						var csv_data = _.findWhere(csv, join_field_object);
+						$.extend(object.properties, csv_data);
+					});
+
+					merged_data.features = geo_json;
+
+					callback(merged_data);
+
 				},
 				error: function (xhr, ajaxOptions, thrownError)
 				{
 					console.log( xhr.status + "  " + thrownError );
 				}
-
 			});
 
-			$.each(geo_json, function(index, object)
-			{
-				join_field_object[join_field_key] = object.properties[join_field_key];
-				var csv_data = _.findWhere(csv, join_field_object);
-				$.extend(object.properties, csv_data);
-			});
-
-			merged_data.features = geo_json;
-			return merged_data;
 		}
 		else
 		{
 			console.log("Error loading CSV data");
 		}
+
+
 	});
-
-
 };
 
 

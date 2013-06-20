@@ -1,12 +1,13 @@
 var mapData = new MapData();
-// var cmap = new Map();
+var cmap = new Map();
 
-mapData.mergeData( "data/testcsv.csv", "data/testgeojson.json", "ccg_code" );
+mapData.mergeData( "data/testcsv.csv", "data/testgeojson.json", "ccg_code", function (data){
 
-console.log("Controlling");
-console.log(gj);
+	cmap.buildCholorpleth(data);
+});
+
+
 
 // cmap.buildCholorpleth( gj );
-
 // map.build( data.mergeData() );
-
+// var cmap = new Map();
