@@ -1,19 +1,14 @@
 function MapData(csvPath, geoJsonPath, join_field_key) {
     this.csvPath = csvPath;
     this.geoJsonPath = geoJsonPath;
-    this.join_field_key;
     return this;
-};
-
+}
 
 MapData.prototype.mergeData = function(callback)
 {
-
 	var csv;
 	var geo_json;
-	var merged_data = {"type" : "FeatureCollection",
-                 	   "features" : undefined };
-
+	var merged_data = {"type" : "FeatureCollection", "features" : undefined };
 	var join_field_object = {};
 
     geoJsonPath = this.geoJsonPath;
@@ -32,9 +27,6 @@ MapData.prototype.mergeData = function(callback)
 
 				success: function (data)
 				{
-
-					console.log("CSV called");
-
 					geo_json = data.features;
 
 					$.each(geo_json, function(index, object)
@@ -45,12 +37,7 @@ MapData.prototype.mergeData = function(callback)
 					});
 
 					merged_data.features = geo_json;
-
-					console.log( buildingData.state() );
-
 					buildingData.resolve(merged_data);
-
-					console.log( buildingData.state() );
 
 				},
 				error: function (xhr, ajaxOptions, thrownError)
@@ -63,24 +50,12 @@ MapData.prototype.mergeData = function(callback)
 		{
 			console.log("Error loading CSV data");
 		}
-	}); //d3 call
+	});
 
 	a = buildingData.done(function(d) {
 		callback(d);
 	});
-
-		// fileStream.then(function(){
-		// 		console.log("fileStream done");
-		// 	}, function(){
-		// 		console.log("Error in fileStream")
-		// 	}, function(){
-		// 		console.log("Loading")
-		// });
-
 };
 
-
-
-//Need to write error callbacks on the JQuery get request.
 
 
