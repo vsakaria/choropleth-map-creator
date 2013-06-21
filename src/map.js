@@ -1,18 +1,17 @@
-function Map() {
-};
+function Choropleth(data) {
+	console.log("OO version");
 
-Map.prototype.buildCholorpleth = function( data )
-{
-	var map = L.map('map').setView([51.505, -0.09], 6);
-	var info = L.control();
-	var legend = L.control({position: 'bottomright'});
+	map = L.map('map').setView([51.505, -0.09], 6);
 
 	L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png',
 	{
-			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+		attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 	}).addTo(map);
 
 	geojson = L.geoJson(data, {style: style, onEachFeature: onEachFeature}).addTo(map);
+
+    this.map = map;
+	return this;
 };
 
 function getColor(d) {
@@ -38,6 +37,10 @@ function style(feature) {
 }
 
 
+Choropleth.prototype.addInfo = function () {
+	console.log("info");
+	var info = L.control();
+
 	//////////////////////////////Top Right Info Box function defintion//////////////////////////////////////
 	info.onAdd = function (map) {
 			this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
@@ -50,33 +53,41 @@ function style(feature) {
 			this._div.innerHTML = '<h4>US Population Density</h4>' +  (props ?
 					'<b>' + props.Name + '</b><br />' + props.region + ' people / mi<sup>2</sup>'
 					: 'Hover over a state');
+			return this._div;
 	};
 
-	info.addTo(map);
+	info.addTo(this.map);
+	this.info = info;
+	return this;
+}
 
-	//////////////////////////////Bottom Right Ledgend Box function definitions /////////////////////////////////////
+//////////////////////////////Bottom Right Ledgend Box function definitions /////////////////////////////////////
 
+Choropleth.prototype.addLegend = function() {
+	console.log("legend");
+	var legend = L.control({position: 'bottomright'});
 
 	legend.onAdd = function (map) {
 
-	var div = L.DomUtil.create('div', 'info legend'),
-			grades = [0, 19, 21, 23, 24, 25, 27, 35],
-			labels = [];
+		this._div = L.DomUtil.create('div', 'info legend'),
+				grades = [0, 19, 21, 23, 24, 25, 27, 35],
+				labels = [];
 
-	// loop through our density intervals and generate a label with a colored square for each interval
-	for (var i = 0; i < grades.length; i++) {
-			div.innerHTML +=
-					'<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
-					grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
-	}
-
-	return div;
+		// loop through our density intervals and generate a label with a colored square for each interval
+		for (var i = 0; i < grades.length; i++) {
+				this._div.innerHTML +=
+						'<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+						grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+		}
+		return this._div;
 	};
 
+	legend.addTo(this.map);
 
-legend.addTo(map);
+	 return this;
 
-//////////////////////////Event Listeners/////////////////////////////////
+}
+
 function highlightFeature(e) {
 		var layer = e.target;
 
@@ -91,17 +102,17 @@ function highlightFeature(e) {
 				layer.bringToFront();
 		}
 
-		info.update( layer.feature.properties )
+		choropleth.info.update( layer.feature.properties )
 }
 
 function resetHighlight(e) {
 		geojson.resetStyle(e.target);
-		info.update();
+		choropleth.info.update();
 };
 
 function zoomToFeature(e) {
 		map.fitBounds(e.target.getBounds());
-}
+};
 
 function onEachFeature(feature, layer) {
 		layer.on({
