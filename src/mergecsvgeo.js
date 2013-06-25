@@ -1,6 +1,8 @@
 function MapData(csvPath, geoJsonPath, join_field_key) {
     this.csvPath = csvPath;
     this.geoJsonPath = geoJsonPath;
+    this.join_field_key = join_field_key;
+
     return this;
 }
 
@@ -10,6 +12,7 @@ MapData.prototype.mergeData = function(callback)
 	var geo_json;
 	var merged_data = {"type" : "FeatureCollection", "features" : undefined };
 	var join_field_object = {};
+	var join_field_key = this.join_field_key;
 
     geoJsonPath = this.geoJsonPath;
 
@@ -17,6 +20,7 @@ MapData.prototype.mergeData = function(callback)
 
 	d3.csv(this.csvPath, function(csv)
 	{
+
 		if(csv)
 		{
 			$.ajax(
@@ -31,12 +35,15 @@ MapData.prototype.mergeData = function(callback)
 
 					$.each(geo_json, function(index, object)
 					{
-						join_field_object[this.join_field_key] = object.properties[this.join_field_key];
+
+						join_field_object[join_field_key] = object.properties[join_field_key];
+
 						var csv_data = _.findWhere(csv, join_field_object);
 						$.extend(object.properties, csv_data);
 					});
 
 					merged_data.features = geo_json;
+					console.log(merged_data);
 					buildingData.resolve(merged_data);
 
 				},
@@ -52,7 +59,7 @@ MapData.prototype.mergeData = function(callback)
 		}
 	});
 
-	a = buildingData.done(function(d) {
+	buildingData.done(function(d) {
 		callback(d);
 	});
 };

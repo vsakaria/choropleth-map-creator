@@ -1,5 +1,4 @@
 function Choropleth(data) {
-    console.log("OO version");
 
     this.map = L.map('map').setView([51.505, -0.09], 6);
 
@@ -10,13 +9,59 @@ function Choropleth(data) {
 
     geojson = L.geoJson(data, {style: style, onEachFeature: onEachFeature}).addTo(this.map);
 
+    console.log(this.map);
+
     return this;
 }
 
+Choropleth.prototype.addTitle = function(header){
+    var title = L.control({position: 'topleft'});
+
+    title.onAdd = function(map){
+        this._div = L.DomUtil.create('div', 'title');
+        if(header){
+            this._div.innerHTML = header;
+        }
+        return this._div;
+    };
+
+    title.addTo(this.map);
+    this.title = title;
+    return this;
+
+    //Create a DOM Element
+};
+
+
+Choropleth.prototype.addInfo = function(callback){
+    var info = L.control();
+
+    info.onAdd = function(map){
+
+        this._div = L.DomUtil.create('div', 'info');
+        this.update();
+        return this._div;
+    };
+
+    info.update = function(props){
+        if(props){
+            this._div.innerHTML = callback(props);
+        }
+        else
+            this._div.innerHTML = "Hover over map";
+    };
+
+    info.addTo(this.map);
+    this.info = info;
+    return this;
+    //
+    //console.log(callback(props));
+    /* */
+};
 //////////////////////////////Top Right Info Box function defintion//////////////////////////////////////
 
-Choropleth.prototype.addInfo = function () {
-    console.log("info");
+Choropleth.prototype.addSimpleInfo = function(lines) {
+    console.log(lines);
     var info = L.control();
 
     info.onAdd = function (map) {
@@ -26,10 +71,18 @@ Choropleth.prototype.addInfo = function () {
         };
 
         // method that we will use to update the control based on feature properties passed
-    info.update = function (props) {
-            this._div.innerHTML = '<h4>US Population Density</h4>' +  (props ?
-                    '<b>' + props.Name + '</b><br />' + props.region + ' people / mi<sup>2</sup>'
-                    : 'Hover over a state');
+    info.update = function (props){
+            var remain_text = "";
+
+            for (var i = 1; i < lines.length; i++) {
+
+                if(props){
+                    remain_text += ( replaceAll('_', ' ', capitaliseFirstLetter(lines[i]) ) + ": " + props[lines[i]] + '<br/>' );
+                }
+            }
+
+            this._div.innerHTML = '<h3>' + lines[0] + '</h3>' + (props ?  remain_text : 'Hover over a state');
+
             return this._div;
         };
 
@@ -38,10 +91,12 @@ Choropleth.prototype.addInfo = function () {
     return this;
 };
 
+
+
 //////////////////////////////Bottom Right Ledgend Box function definitions /////////////////////////////////////
 
 Choropleth.prototype.addLegend = function(gradesParam) {
-    console.log("legend");
+
     var legend = L.control({position: 'bottomright'});
 
     legend.onAdd = function (map) {
@@ -62,10 +117,18 @@ Choropleth.prototype.addLegend = function(gradesParam) {
     legend.addTo(this.map);
 
     return this;
-
 };
 
 //////////////////////////////Helper functions /////////////////////////////////////
+
+function replaceAll(find, replace, str) {
+    return str.replace(new RegExp(find, 'g'), replace);
+}
+
+function capitaliseFirstLetter(string)
+{
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 function getColor(d) {
         return  d > 35 ? '#800026' :
@@ -112,8 +175,8 @@ function resetHighlight(e) {
     }
 
 function zoomToFeature(e) {
-        map.fitBounds(e.target.getBounds());
-    }
+    choropleth.map.fitBounds(e.target.getBounds());
+}
 
 function onEachFeature(feature, layer) {
         layer.on({
@@ -122,4 +185,3 @@ function onEachFeature(feature, layer) {
                 click: zoomToFeature
             });
     }
-
