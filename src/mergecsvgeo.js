@@ -1,15 +1,13 @@
-function MapData(csvPath, geoJsonPath, join_field_key) {
+function MapData(csvPath, geoJsonPath, joinFieldKey) {
     this.csvPath = csvPath;
     this.geoJsonPath = geoJsonPath;
-    this.join_field_key = join_field_key;
+    this.join_field_key = joinFieldKey;
 
     return this;
 }
 
 MapData.prototype.mergeData = function (callback) {
-    var geo_json;
-    var merged_data = {"type": "FeatureCollection", "features": undefined };
-    var join_field_key = this.join_field_key;
+    var joinFieldKey = this.join_field_key;
 
     geoJsonPath = this.geoJsonPath;
 
@@ -28,9 +26,9 @@ MapData.prototype.mergeData = function (callback) {
 
                     success: function (data) {
 
-                        geo_json = data.features;
-                        merged_data = processData(csv, geo_json, join_field_key);
-                        buildingData.resolve(merged_data);
+                        features = data.features;
+                        data.features = processData(csv, features, joinFieldKey);
+                        buildingData.resolve(data);
 
                     },
                     error: function (xhr, ajaxOptions, thrownError) {
@@ -48,22 +46,19 @@ MapData.prototype.mergeData = function (callback) {
     });
 };
 
-function processData(csvData, geoData, joinKey) {
+function processData(csvData, features, joinKey) {
 
-    var join_field_object = {};
-    var merged_data = {"type": "FeatureCollection", "features": undefined };
+    var joinFieldObject = {};
 
-    $.each(geoData, function (index, object) {
+    $.each(features, function (index, object) {
 
-        join_field_object[joinKey] = object.properties[joinKey];
+        joinFieldObject[joinKey] = object.properties[joinKey];
 
-        var csv_data = _.findWhere(csvData, join_field_object);
+        var csv_data = _.findWhere(csvData, joinFieldObject);
         $.extend(object.properties, csv_data);
     });
 
-    merged_data.features = geoData;
-
-    return merged_data;
+    return features;
 }
 
 
