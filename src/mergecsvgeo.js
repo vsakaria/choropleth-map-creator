@@ -23,6 +23,8 @@ MapData.prototype.mergeData = function(callback)
 
 		if(csv)
 		{
+			console.log(csv);
+
 			$.ajax(
 			{
 				url: geoJsonPath,
@@ -32,6 +34,8 @@ MapData.prototype.mergeData = function(callback)
 				success: function (data)
 				{
 					geo_json = data.features;
+
+					console.log(geo_json);
 
 					$.each(geo_json, function(index, object)
 					{
@@ -43,13 +47,13 @@ MapData.prototype.mergeData = function(callback)
 					});
 
 					merged_data.features = geo_json;
-					console.log(merged_data);
+
 					buildingData.resolve(merged_data);
 
 				},
 				error: function (xhr, ajaxOptions, thrownError)
 				{
-					console.log( xhr.status + "  " + thrownError );
+					console.log( xhr.status + " - " + thrownError );
 				}
 			});
 		}
@@ -63,6 +67,11 @@ MapData.prototype.mergeData = function(callback)
 		callback(d);
 	});
 };
+
+function foo(){
+	return 'foo';
+};
+
 
 
 

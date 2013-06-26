@@ -9,8 +9,6 @@ function Choropleth(data) {
 
     geojson = L.geoJson(data, {style: style, onEachFeature: onEachFeature}).addTo(this.map);
 
-    console.log(this.map);
-
     return this;
 }
 
@@ -33,25 +31,26 @@ Choropleth.prototype.addTitle = function(header){
 };
 
 
-Choropleth.prototype.addInfo = function(callback){
+Choropleth.prototype.addInfo = function(callback) {
     var info = L.control();
 
-    info.onAdd = function(map){
+    info.onAdd = function(map) {
 
         this._div = L.DomUtil.create('div', 'info');
         this.update();
         return this._div;
     };
 
-    info.update = function(props){
-        if(props){
+    info.update = function(props) {
+        if (props) {
             this._div.innerHTML = callback(props);
-        }
-        else
+        } else {
             this._div.innerHTML = "Hover over map";
+        }
     };
 
     info.addTo(this.map);
+    this.map.info = info;
     this.info = info;
     return this;
     //
@@ -65,18 +64,18 @@ Choropleth.prototype.addSimpleInfo = function(lines) {
     var info = L.control();
 
     info.onAdd = function (map) {
-            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this._div = L.DomUtil.create('div', 'info');
             this.update();
             return this._div;
         };
 
-        // method that we will use to update the control based on feature properties passed
-    info.update = function (props){
+    // method that we will use to update the control based on feature properties passed
+    info.update = function (props) {
             var remain_text = "";
 
             for (var i = 1; i < lines.length; i++) {
 
-                if(props){
+                if (props) {
                     remain_text += ( replaceAll('_', ' ', capitaliseFirstLetter(lines[i]) ) + ": " + props[lines[i]] + '<br/>' );
                 }
             }
@@ -87,6 +86,7 @@ Choropleth.prototype.addSimpleInfo = function(lines) {
         };
 
     info.addTo(this.map);
+
     this.info = info;
     return this;
 };
@@ -166,16 +166,16 @@ function highlightFeature(e) {
             layer.bringToFront();
         }
 
-        choropleth.info.update( layer.feature.properties );
+        e.target._map.info.update( layer.feature.properties );
     }
 
 function resetHighlight(e) {
         geojson.resetStyle(e.target);
-        choropleth.info.update();
+        e.target._map.info.update();
     }
 
 function zoomToFeature(e) {
-    choropleth.map.fitBounds(e.target.getBounds());
+    e.target._map.fitBounds(e.target.getBounds());
 }
 
 function onEachFeature(feature, layer) {
