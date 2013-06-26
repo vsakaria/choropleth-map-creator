@@ -1,7 +1,7 @@
 function foo() {
-	return 'foo';
+    return 'foo';
 }
 
-function loaddata(data){
-	return data;
+function loaddata(data) {
+    return data;
 }

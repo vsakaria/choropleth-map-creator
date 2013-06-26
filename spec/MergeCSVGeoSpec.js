@@ -182,10 +182,10 @@ describe("MapData", function(){
 		]
 	};
 
-	beforeEach(function(){
+	beforeEach(function (){
 	});
 
-	describe("mergeData", function(){
+	describe("mergeData", function (){
 		it("It merges CSV and GeoJson files based on a join field. Testing presence of CSV data.", function(){
 			result = mergeDataLocal(csvData, geoData,"ccg_code");
 			expect(result.features[0].properties.region).toEqual("London");
@@ -208,9 +208,3 @@ describe("MapData", function(){
 	});
 
 });
-
-// describe("mergeData", function() {
-	// 	it("should merge CSV & geojson files", function() {
-	// 		expect(mergeData()).toEqual('foo');
-	// 	});
-	// });
