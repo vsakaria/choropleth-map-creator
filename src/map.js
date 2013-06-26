@@ -26,8 +26,6 @@ Choropleth.prototype.addTitle = function (header) {
     title.addTo(this.map);
     this.title = title;
     return this;
-
-    //Create a DOM Element
 };
 
 
@@ -53,10 +51,8 @@ Choropleth.prototype.addInfo = function (callback) {
     this.map.info = info;
     this.info = info;
     return this;
-    //
-    //console.log(callback(props));
-    /* */
 };
+
 //////////////////////////////Top Right Info Box function defintion//////////////////////////////////////
 
 Choropleth.prototype.addSimpleInfo = function (lines) {
@@ -90,7 +86,6 @@ Choropleth.prototype.addSimpleInfo = function (lines) {
     this.info = info;
     return this;
 };
-
 
 //////////////////////////////Bottom Right Ledgend Box function definitions /////////////////////////////////////
 

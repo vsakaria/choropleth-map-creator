@@ -1,4 +1,4 @@
-var csvData = [
+var csvDataSmall = [
     {
         "ccg_code":"07L",
         "total_items_month":16642,
@@ -13,7 +13,7 @@ var csvData = [
     }
 ];
 
-var csvData2 = [
+var csvDataLarge = [
     {
         "ccg_code":"07L",
         "total_items_month":16642,
@@ -52,7 +52,7 @@ var csvData2 = [
     }
 ];
 
-var geoData = [{
+var geoDataSmall = [{
     "type" : "Feature",
     "properties" :
     {
@@ -74,7 +74,7 @@ var geoData = [{
 
 }];
 
-var geoData2 = [{
+var geoDataLarge = [{
     "type" : "Feature",
     "properties" :
     {
