@@ -1,4 +1,4 @@
-A JS library to create a Choropleth on a map using GeoJson Data!
+A OO JS library to create a Choropleth on a map using GeoJson Data!
 
 MERGING CSV GEOJSON DATA
 
