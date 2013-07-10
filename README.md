@@ -13,3 +13,5 @@ MAPPING THE DATA INTO A CHOROPLETH.
 Map.js allows you to create a map by passing in the data into the constructor. You can then addInfo box using a callback containing HTML code and addLegend with an array of numbers.
 
 See Control.js for implementation example and index for live example. 
+
+Visit http://vishal81.com/choropleth/map/ for live demo!
